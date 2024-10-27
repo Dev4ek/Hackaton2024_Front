@@ -1,0 +1,18 @@
+.error-message {
+    color: red;
+    margin-top: 10px;
+}
+
+.signup-link{
+    text-align: center;
+    margin-top: 30px;
+}
+.signup-link button{
+    background-color: rgb(211, 211, 211);
+    padding: 10px;
+    border-radius: 5px;
+}
+.signup-link button:hover{
+    background-color: rgb(179, 179, 179);
+    cursor: pointer;
+}
