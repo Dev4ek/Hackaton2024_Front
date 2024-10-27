@@ -17,7 +17,7 @@ const Mainpage: React.FC = () => {
     const [endDate, setEndDate] = useState('');
     const [responsiblePerson, setResponsiblePerson] = useState('');
     const [profileOpen, setProfileOpen] = useState<boolean>(false);
-    const [chatOpen, setChatOpen] = useState<boolean>(false); // Состояние для окна чата
+    const [chatOpen, setChatOpen] = useState<boolean>(false);
 
     const navigate = useNavigate();
 
@@ -56,16 +56,30 @@ const Mainpage: React.FC = () => {
         return <div>{error}</div>;
     }
 
-    const OpenProfile = () => {
-        setProfileOpen(true);
-    }
-    const CloseProfile = () => {
-        setProfileOpen(false);
-    }
+    const OpenProfile = () => setProfileOpen(true);
+    const CloseProfile = () => setProfileOpen(false);
+    const toggleChat = () => setChatOpen(prev => !prev);
 
-    const toggleChat = () => {
-        setChatOpen(prev => !prev);
-    }
+    const execel = async (projectId: any) => {
+        try {
+            const response = await axios.get(`http://31.128.36.91:8082/project/${projectId}/tasks.xlsx`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                },
+                responseType: 'blob',
+            });
+
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `tasks_${projectId}.xlsx`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (error) {
+            console.error("Ошибка при выгрузке в Excel:", error);
+        }
+    };
 
     return (
         <>
@@ -74,39 +88,40 @@ const Mainpage: React.FC = () => {
                     <div className="container">
                         <div className="board__header-wrap">
                             <div className="board__logo"><span>СМИ лучшие ребятки</span></div>
-                            <div className='admin_btn' onClick={() => navigate('/admin')}>Панель администратора</div>
+                            <div className='admin_btn' onClick={() => navigate('/admin')} style={{backgroundColor: 'red', padding: 10}}>Панель администратора</div>
+                            <div className='exel'style={{backgroundColor: 'red', padding: 10}} onClick={() => execel(projectId)}>Выгрузка в EXCEL</div>
+                        </div>
 
-                            <div className="board__filter">
-                                <form className="filter-search" onSubmit={(e) => e.preventDefault()}>
-                                    <input
-                                        className="filter-search__field"
-                                        type="text"
-                                        aria-label="Задачи поиска"
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                    />
-                                    <input
-                                        type="date"
-                                        value={startDate}
-                                        onChange={(e) => setStartDate(e.target.value)}
-                                        style={{ color: 'black', backgroundColor: 'white', padding: 10, marginTop: 10 }}
-                                    />
-                                    <input
-                                        type="date"
-                                        value={endDate}
-                                        onChange={(e) => setEndDate(e.target.value)}
-                                        style={{ color: 'black', backgroundColor: 'white', padding: 10, marginTop: 10, marginLeft: 5 }}
-                                    />
-                                    <input
-                                        type="text"
-                                        placeholder="Ответственный"
-                                        value={responsiblePerson}
-                                        onChange={(e) => setResponsiblePerson(e.target.value)}
-                                        style={{ color: 'black', backgroundColor: 'white', padding: 10, marginTop: 10, marginLeft: 5 }}
-                                    />
-                                </form>
-                                <a className="filter-prof" href="#" aria-label="Ссылка профиля" onClick={OpenProfile}></a>
-                            </div>
+                        <div className="board__filter">
+                            <form className="filter-search" onSubmit={(e) => e.preventDefault()}>
+                                <input
+                                    className="filter-search__field"
+                                    type="text"
+                                    aria-label="Задачи поиска"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                />
+                                <input
+                                    type="date"
+                                    value={startDate}
+                                    onChange={(e) => setStartDate(e.target.value)}
+                                    style={{ color: 'black', backgroundColor: 'white', padding: 10, marginTop: 10 }}
+                                />
+                                <input
+                                    type="date"
+                                    value={endDate}
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                    style={{ color: 'black', backgroundColor: 'white', padding: 10, marginTop: 10, marginLeft: 5 }}
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Ответственный"
+                                    value={responsiblePerson}
+                                    onChange={(e) => setResponsiblePerson(e.target.value)}
+                                    style={{ color: 'black', backgroundColor: 'white', padding: 10, marginTop: 10, marginLeft: 5 }}
+                                />
+                            </form>
+                            <a className="filter-prof" href="#" aria-label="Ссылка профиля" onClick={OpenProfile}></a>
                         </div>
                     </div>
                 </div>
