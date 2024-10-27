@@ -51,9 +51,15 @@ const Task: React.FC<TaskProps> = ({ task, onClose }) => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        const params = new URLSearchParams({
+            title: formData.title,
+            description: formData.description,
+            status_task: formData.status_task,
+            comment: formData.comment
+        }).toString();
 
         try {
-            const response = await axios.put(`http://31.128.36.91:8082/task/${task.uuid}`, formData, {
+            const response = await axios.put(`http://31.128.36.91:8082/task/${task.uuid}?${params}`, formData, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem("token")}`,
