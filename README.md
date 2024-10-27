@@ -11,5 +11,5 @@
 2. Build and run the application:
 
     ```bash
-    npm run install
+    npm install
     npm run dev
